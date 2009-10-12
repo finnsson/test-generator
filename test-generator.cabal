@@ -1,0 +1,46 @@
+name: test-generator
+version: 0.0.1
+cabal-version: -any
+build-type: Simple
+license: BSD4
+license-file: ""
+copyright:
+maintainer: Oscar Finnsson
+build-depends: base -any, test-framework-hunit, test-framework, HUnit, function-extractor, haskell-src-exts, haskell98, regex-posix, template-haskell
+stability:
+homepage:
+package-url:
+bug-reports:
+synopsis:
+description: Automagically generated the HUnit-bulk-code.
+category:
+author: Oscar Finnsson & Emil Nordling
+tested-with:
+data-files:
+data-dir: ""
+extra-source-files:
+extra-tmp-files:
+exposed-modules: TestGenerator
+exposed: True
+buildable: True
+build-tools:
+cpp-options:
+cc-options:
+ld-options:
+pkgconfig-depends:
+frameworks:
+c-sources:
+extensions:
+extra-libraries:
+extra-lib-dirs:
+includes:
+install-includes:
+include-dirs:
+hs-source-dirs: src
+other-modules:
+ghc-prof-options:
+ghc-shared-options:
+ghc-options:
+hugs-options:
+nhc98-options:
+jhc-options:
