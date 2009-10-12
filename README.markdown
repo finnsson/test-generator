@@ -4,6 +4,16 @@ Haskell-module to automagically generate repetetive code when writing HUnit-test
 
 ## testGroupGenerator
 
+### signature
+
+    testGroupGenerator :: ExpQ
+
+### usage
+
+    myTestGroup = $(testGroupGenerator)
+
+### example
+
     -- file SomeModule.hs
     fooTestGroup = $(testGroupGenerator)
     main = defaultMain [fooTestGroup]
@@ -19,6 +29,16 @@ is the same as
     test2 = do 2 @=? 2
 
 ## defaultMainGenerator
+
+### signature
+
+    defaultMainGenerator :: ExpQ
+
+### usage
+
+    main = $(defaultMainGenerator)
+
+### example
 
     {-# OPTIONS_GHC -fglasgow-exts -XTemplateHaskell #-}
     module MyModuleTest where
