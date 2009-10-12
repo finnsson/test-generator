@@ -6,7 +6,7 @@ license: BSD4
 license-file: ""
 copyright:
 maintainer: Oscar Finnsson
-build-depends: base -any, test-framework-hunit, test-framework, HUnit, function-extractor, haskell-src-exts, haskell98, regex-posix, template-haskell
+build-depends: base -any, test-framework-hunit, test-framework, HUnit, template-helper, haskell-src-exts, haskell98, regex-posix, template-haskell
 stability:
 homepage:
 package-url:
