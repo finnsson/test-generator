@@ -22,7 +22,7 @@ Haskell-module to automagically generate repetetive code when writing HUnit-test
 
 is the same as
 
-    -- file SoomeModule.hs
+    -- file SomeModule.hs
     fooTestGroup = testGroup "SomeModule" [testCase "test1" test1, testCase "test2" test2]
     main = defaultMain [fooTestGroup]
     test1 = do 1 @=? 1

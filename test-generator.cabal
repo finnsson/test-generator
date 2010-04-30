@@ -1,18 +1,38 @@
 name: test-generator
-version: 0.0.1
+version: 0.1.0
 cabal-version: -any
 build-type: Simple
 license: BSD4
 license-file: ""
 copyright:
 maintainer: Oscar Finnsson
-build-depends: base -any, test-framework-hunit, test-framework, HUnit, template-helper, haskell-src-exts, haskell98, regex-posix, template-haskell
+build-depends: base -any, test-framework-hunit >= 0.2.4, test-framework, HUnit, template-helper, haskell-src-exts, haskell98, regex-posix, template-haskell
 stability:
-homepage:
+homepage: http://github.com/finnsson/test-generator
 package-url:
 bug-reports:
-synopsis:
-description: Automagically generated the HUnit-bulk-code.
+synopsis: Automagically generate the HUnit-bulk-code using Template Haskell.
+description:
+   @test-generator@ contains two interesting functions: @defaultMainGenerator@ and @testGroupGenerator@.
+   .
+   @defaultMainGenerator@ will extract all functions in the module and put them in a testGroup.
+   .
+   > module Foo where
+   > main = $(defaultMainGenerator)
+   >
+   > testTwo = 2 @=? 2
+   > testHi = "hi" @=? "hi"
+  .
+  is the same as
+  .
+  > module Foo where
+  > main = defaultMain [testGroup "Foo" [testCase "testTwo" testTwo, testCase "testHi" testHi]
+  >
+  > testTwo = 2 @=? 2
+  > testHi = "hi" @=? "hi"
+  .
+  @testGroupGenerator@ is like @defaultMainGenerator@ but without @defaultMain@. It is useful if you need a function for the testgroup
+  (e.g. if you want to be able to call the testgroup from another module).
 category:
 author: Oscar Finnsson & Emil Nordling
 tested-with:
