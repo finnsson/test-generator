@@ -17,16 +17,16 @@ Haskell-module to automagically generate repetetive code when writing HUnit-test
     -- file SomeModule.hs
     fooTestGroup = $(testGroupGenerator)
     main = defaultMain [fooTestGroup]
-    test1 = do 1 @=? 1
-    test2 = do 2 @=? 2
+    case1 = do 1 @=? 1
+    case2 = do 2 @=? 2
 
 is the same as
 
     -- file SomeModule.hs
-    fooTestGroup = testGroup "SomeModule" [testCase "test1" test1, testCase "test2" test2]
+    fooTestGroup = testGroup "SomeModule" [testCase "case1" case1, testCase "case2" case2]
     main = defaultMain [fooTestGroup]
-    test1 = do 1 @=? 1
-    test2 = do 2 @=? 2
+    case1 = do 1 @=? 1
+    case2 = do 2 @=? 2
 
 ## defaultMainGenerator
 
@@ -47,9 +47,9 @@ is the same as
     
     main = $(defaultMainGenerator)
    
-    testFoo = do 4 @=? 4
+    caseFoo = do 4 @=? 4
     
-    testBar = do "hej" @=? "hej"
+    caseBar = do "hej" @=? "hej"
 
 will automagically extract testFoo and testBar and run them as well as present them as belonging to the testGroup 'MyModuleTest'. The above code is the same as
 
@@ -60,19 +60,19 @@ will automagically extract testFoo and testBar and run them as well as present t
     
     main =
       defaultMain [
-        testGroup "MyModuleTest" [ testCase "testFoo" testFoo, testCase "testBar" testBar]
+        testGroup "MyModuleTest" [ testCase "caseFoo" caseFoo, testCase "caseBar" caseBar]
         ]
     
-    testFoo = do 4 @=? 4
+    caseFoo = do 4 @=? 4
    
-    testBar = do "hej" @=? "hej"
+    caseBar = do "hej" @=? "hej"
 
 and will give the following result
 
     me: runghc MyModuleTest.hs 
     MyModuleTest:
-      testFoo: [OK]
-      testBar: [OK]
+      caseFoo: [OK]
+      caseBar: [OK]
      
              Test Cases  Total      
      Passed  2           2          

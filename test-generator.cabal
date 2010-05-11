@@ -1,35 +1,39 @@
 name: test-generator
-version: 0.1.0
+version: 0.1.1
 cabal-version: -any
 build-type: Simple
 license: BSD4
 license-file: ""
 copyright:
 maintainer: Oscar Finnsson
-build-depends: base -any, test-framework-hunit >= 0.2.4, test-framework, HUnit, template-helper, haskell-src-exts, haskell98, regex-posix, template-haskell
+build-depends: base >= 4, test-framework-hunit >= 0.2.4, test-framework-quickcheck2 >= 0.2.4, test-framework, HUnit, template-helper, haskell-src-exts, haskell98, regex-posix, template-haskell
 stability:
 homepage: http://github.com/finnsson/test-generator
 package-url:
 bug-reports:
-synopsis: Automagically generate the HUnit-bulk-code using Template Haskell.
+synopsis: Automagically generate the HUnit- and Quickcheck-bulk-code using Template Haskell.
 description:
    @test-generator@ contains two interesting functions: @defaultMainGenerator@ and @testGroupGenerator@.
    .
-   @defaultMainGenerator@ will extract all functions in the module and put them in a testGroup.
+   @defaultMainGenerator@ will extract all functions beginning with case or prop in the module and put them in a testGroup.
    .
    > module Foo where
    > main = $(defaultMainGenerator)
    >
-   > testTwo = 2 @=? 2
-   > testHi = "hi" @=? "hi"
+   > caseTwo = 2 @=? 2
+   > caseHi = "hi" @=? "hi"
+   > propReverse xs = reverse (reverse xs) == xs
+   >  where types = xs :: [Int]
   .
   is the same as
   .
   > module Foo where
-  > main = defaultMain [testGroup "Foo" [testCase "testTwo" testTwo, testCase "testHi" testHi]
+  > main = defaultMain [testGroup "Foo" [testProperty "propReverse" propReverse, testCase "testTwo" testTwo, testCase "testHi" testHi]
   >
   > testTwo = 2 @=? 2
   > testHi = "hi" @=? "hi"
+  > propReverse xs = reverse (reverse xs) == xs
+  >  where types = xs :: [Int]
   .
   @testGroupGenerator@ is like @defaultMainGenerator@ but without @defaultMain@. It is useful if you need a function for the testgroup
   (e.g. if you want to be able to call the testgroup from another module).

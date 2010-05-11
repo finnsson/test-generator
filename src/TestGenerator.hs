@@ -23,6 +23,7 @@ import Text.Regex.Posix
 import Maybe
 import Language.Haskell.Exts.Extension
 import Test.Framework.Providers.HUnit
+import Test.Framework.Providers.QuickCheck2
 import TemplateHelper
 import Test.Framework (Test)
 
@@ -41,46 +42,58 @@ import Test.Framework.Providers.HUnit
 --   > 
 --   > main = $(defaultMainGenerator)
 --   >
---   > testFoo = do 4 @=? 4
+--   > caseFoo = do 4 @=? 4
 --   >
---   > testBar = do "hej" @=? "hej"
+--   > caseBar = do "hej" @=? "hej"
+--   > 
+--   > propReverse xs = reverse (reverse xs) == xs
+--   >   where types = xs :: [Int]
 --   
---   will automagically extract testFoo and testBar and run them as well as present them as belonging to the testGroup 'MyModuleTest' such as
+--   will automagically extract caseFoo and caseBar and run them as well as present them as belonging to the testGroup 'MyModuleTest' such as
 --
 --   > me: runghc MyModuleTest.hs 
 --   > MyModuleTest:
---   >   testFoo: [OK]
---   >   testBar: [OK]
+--   >   propReverse: [OK, passed 100 tests]
+--   >   caseFoo: [OK]
+--   >   caseBar: [OK]
 --   > 
---   >          Test Cases  Total      
---   >  Passed  2           2          
---   >  Failed  0           0          
---   >  Total   2           2 
+--   >          Properties  Test Cases   Total       
+--   >  Passed  1           2            3          
+--   >  Failed  0           0            0           
+--   >  Total   1           1            3
+ 
 --   
 defaultMainGenerator :: ExpQ
 defaultMainGenerator = 
-  [| defaultMain [ testGroup $(locationModule) (mapTestCases $(functionExtractor "^test") ) ] |]
+  [| defaultMain [ testGroup $(locationModule) $ $(propListGenerator) ++ (mapTestCases $(functionExtractor "^case") ) ] |]
 
 -- | Generate the usual code and extract the usual functions needed for a testGroup in HUnit.
 --  
 --   > -- file SomeModule.hs
 --   > fooTestGroup = $(testGroupGenerator)
 --   > main = defaultMain [fooTestGroup]
---   > test1 = do 1 @=? 1
---   > test2 = do 2 @=? 2
+--   > case1 = do 1 @=? 1
+--   > case2 = do 2 @=? 2
+--   > prop1 xs = reverse (reverse xs) == xs
+--   >  where types = xs :: [Int]
 --   
 --   is the same as
 --
 --   > -- file SoomeModule.hs
---   > fooTestGroup = testGroup "SomeModule" [testCase "test1" test1, testCase "test2" test2]
+--   > fooTestGroup = testGroup "SomeModule" [testProperty "prop1" prop1, testCase "case1" case1, testCase "case2" case2]
 --   > main = defaultMain [fooTestGroup]
---   > test1 = do 1 @=? 1
---   > test2 = do 2 @=? 2
+--   > case1 = do 1 @=? 1
+--   > case2 = do 2 @=? 2
+--   > prop1 xs = reverse (reverse xs) == xs
+--   >  where types = xs :: [Int]
 --
 testGroupGenerator :: ExpQ
 testGroupGenerator =
-  [| testGroup $(locationModule) (mapTestCases $(functionExtractor "^test") ) |]
+  [| testGroup $(locationModule) $ $(propListGenerator) ++ (mapTestCases $(functionExtractor "^case") ) |]
 
+propListGenerator :: ExpQ
+propListGenerator =
+  functionExtractorMap "^prop" [|testProperty|]
 
 mapTestCases :: [(String, Assertion)] -> [Test.Framework.Test]
 mapTestCases list =
