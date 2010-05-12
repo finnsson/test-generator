@@ -37,7 +37,7 @@ description:
   .
   @testGroupGenerator@ is like @defaultMainGenerator@ but without @defaultMain@. It is useful if you need a function for the testgroup
   (e.g. if you want to be able to call the testgroup from another module).
-category:
+category: Testing
 author: Oscar Finnsson & Emil Nordling
 tested-with:
 data-files:
