@@ -1,6 +1,6 @@
-# test-generator
+# test-framework-th
 
-Haskell-module to automagically generate repetetive code when writing HUnit-tests.
+Haskell-module to automagically generate repetetive code when writing HUnit/Quickcheck/Quickcheck2-tests.
 
 ## testGroupGenerator
 
@@ -17,16 +17,18 @@ Haskell-module to automagically generate repetetive code when writing HUnit-test
     -- file SomeModule.hs
     fooTestGroup = $(testGroupGenerator)
     main = defaultMain [fooTestGroup]
-    case1 = do 1 @=? 1
-    case2 = do 2 @=? 2
+    case_1 = do 1 @=? 1
+    case_2 = do 2 @=? 2
+    prop_reverse = reverse (reverse xs) == xs where types = xs::[Int]
 
 is the same as
 
     -- file SomeModule.hs
-    fooTestGroup = testGroup "SomeModule" [testCase "case1" case1, testCase "case2" case2]
+    fooTestGroup = testGroup "SomeModule" [testCase "1" case_1, testCase "2" case_2, testProperty "reverse" prop_reverse]
     main = defaultMain [fooTestGroup]
-    case1 = do 1 @=? 1
-    case2 = do 2 @=? 2
+    case_1 = do 1 @=? 1
+    case_2 = do 2 @=? 2
+    prop_reverse = reverse (reverse xs) == xs where types = xs::[Int]
 
 ## defaultMainGenerator
 
@@ -47,11 +49,13 @@ is the same as
     
     main = $(defaultMainGenerator)
    
-    caseFoo = do 4 @=? 4
+    case_Foo = do 4 @=? 4
     
-    caseBar = do "hej" @=? "hej"
+    case_Bar = do "hej" @=? "hej"
 
-will automagically extract testFoo and testBar and run them as well as present them as belonging to the testGroup 'MyModuleTest'. The above code is the same as
+    prop_reverse = reverse (reverse xs) == xs where types = xs::[Int]
+
+will automagically extract prop_reverse, case_Foo and case_Bar and run them as well as present them as belonging to the testGroup 'MyModuleTest'. The above code is the same as
 
     {-# OPTIONS_GHC -fglasgow-exts -XTemplateHaskell #-}
     module MyModuleTest where
@@ -60,21 +64,25 @@ will automagically extract testFoo and testBar and run them as well as present t
     
     main =
       defaultMain [
-        testGroup "MyModuleTest" [ testCase "caseFoo" caseFoo, testCase "caseBar" caseBar]
+        testGroup "MyModuleTest" [ testCase "Foo" case_Foo, testCase "Bar" case_Bar, testProperty "reverse" prop_reverse]
         ]
     
-    caseFoo = do 4 @=? 4
+    case_Foo = do 4 @=? 4
    
-    caseBar = do "hej" @=? "hej"
+    case_Bar = do "hej" @=? "hej"
+
+    prop_reverse = reverse (reverse xs) == xs where types = xs::[Int]
 
 and will give the following result
 
     me: runghc MyModuleTest.hs 
     MyModuleTest:
-      caseFoo: [OK]
-      caseBar: [OK]
+      reverse: [OK, passed 100 tests]
+      Foo: [OK]
+      Bar: [OK]
      
-             Test Cases  Total      
-     Passed  2           2          
-     Failed  0           0          
-     Total   2           2 
+            Properties  Test Cases  Total      
+    Passed  1           2           3          
+    Failed  0           0           0          
+    Total   1           2           3 
+

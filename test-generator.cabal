@@ -1,38 +1,38 @@
-name: test-generator
-version: 0.1.1
+name: test-framework-th
+version: 0.1.2
 cabal-version: -any
 build-type: Simple
 license: BSD4
 license-file: ""
 copyright:
 maintainer: Oscar Finnsson
-build-depends: base >= 4, test-framework-hunit >= 0.2.4, test-framework-quickcheck2 >= 0.2.4, test-framework, HUnit, template-helper, haskell-src-exts, haskell98, regex-posix, template-haskell
+build-depends: base >= 4, test-framework, template-helper, haskell-src-exts, haskell98, regex-posix, template-haskell
 stability:
 homepage: http://github.com/finnsson/test-generator
 package-url:
 bug-reports:
 synopsis: Automagically generate the HUnit- and Quickcheck-bulk-code using Template Haskell.
 description:
-   @test-generator@ contains two interesting functions: @defaultMainGenerator@ and @testGroupGenerator@.
+   @test-framework-th@ contains two interesting functions: @defaultMainGenerator@ and @testGroupGenerator@.
    .
-   @defaultMainGenerator@ will extract all functions beginning with case or prop in the module and put them in a testGroup.
+   @defaultMainGenerator@ will extract all functions beginning with case_ or prop_ in the module and put them in a testGroup.
    .
    > module Foo where
    > main = $(defaultMainGenerator)
    >
-   > caseTwo = 2 @=? 2
-   > caseHi = "hi" @=? "hi"
-   > propReverse xs = reverse (reverse xs) == xs
+   > case_Two = 2 @=? 2
+   > case_Hi = "hi" @=? "hi"
+   > prop_Reverse xs = reverse (reverse xs) == xs
    >  where types = xs :: [Int]
   .
   is the same as
   .
   > module Foo where
-  > main = defaultMain [testGroup "Foo" [testProperty "propReverse" propReverse, testCase "testTwo" testTwo, testCase "testHi" testHi]
+  > main = defaultMain [testGroup "Foo" [testProperty "Reverse" prop_Reverse, testCase "Two" case_Two, testCase "Hi" case_Hi]
   >
-  > testTwo = 2 @=? 2
-  > testHi = "hi" @=? "hi"
-  > propReverse xs = reverse (reverse xs) == xs
+  > case_Two = 2 @=? 2
+  > case_Hi = "hi" @=? "hi"
+  > prop_Reverse xs = reverse (reverse xs) == xs
   >  where types = xs :: [Int]
   .
   @testGroupGenerator@ is like @defaultMainGenerator@ but without @defaultMain@. It is useful if you need a function for the testgroup
@@ -44,7 +44,7 @@ data-files:
 data-dir: ""
 extra-source-files:
 extra-tmp-files:
-exposed-modules: TestGenerator
+exposed-modules: Test.Framework.TH 
 exposed: True
 buildable: True
 build-tools:
