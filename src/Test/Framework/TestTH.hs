@@ -5,7 +5,7 @@ import Test.Framework.TH
 import Test.HUnit
 import Test.Framework.Providers.QuickCheck2
 import Test.Framework.Providers.HUnit
-import TemplateHelper
+import Language.Haskell.Extract 
 
 main = $(defaultMainGenerator)
 

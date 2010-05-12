@@ -22,7 +22,7 @@ import Language.Haskell.Exts.Syntax
 import Text.Regex.Posix
 import Maybe
 import Language.Haskell.Exts.Extension
-import TemplateHelper
+import Language.Haskell.Extract 
 
 import Test.Framework (defaultMain, testGroup)
 
