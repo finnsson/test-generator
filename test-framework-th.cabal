@@ -15,26 +15,46 @@ description:
    .
    @defaultMainGenerator@ will extract all functions beginning with case_ or prop_ in the module and put them in a testGroup.
    .
-   > module Foo where
-   > main = $(defaultMainGenerator)
+   > -- file SomeModule.hs
+   > ( -# OPTIONS_GHC -fglasgow-exts -XTemplateHaskell #- )
+   > module SomeModule where
+   > import Test.Framework.TH
+   > import Test.Framework
+   > import Test.HUnit
+   > import Test.Framework.Providers.HUnit
+   > import Test.Framework.Providers.QuickCheck2
    >
-   > case_Two = 2 @=? 2
-   > case_Hi = "hi" @=? "hi"
-   > prop_Reverse xs = reverse (reverse xs) == xs
-   >  where types = xs :: [Int]
-  .
-  is the same as
-  .
-  > module Foo where
-  > main = defaultMain [testGroup "Foo" [testProperty "Reverse" prop_Reverse, testCase "Two" case_Two, testCase "Hi" case_Hi]
-  >
-  > case_Two = 2 @=? 2
-  > case_Hi = "hi" @=? "hi"
-  > prop_Reverse xs = reverse (reverse xs) == xs
-  >  where types = xs :: [Int]
-  .
-  @testGroupGenerator@ is like @defaultMainGenerator@ but without @defaultMain@. It is useful if you need a function for the testgroup
-  (e.g. if you want to be able to call the testgroup from another module).
+   > -- observe this line! 
+   > main = $(defaultMainGenerator)
+   > case_1 = do 1 @=? 1
+   > case_2 = do 2 @=? 2
+   > prop_reverse xs = reverse (reverse xs) == xs
+   >    where types = xs::[Int]
+   .
+   is the same as
+   .
+   > -- file SomeModule.hs
+   > ( -# OPTIONS_GHC -fglasgow-exts -XTemplateHaskell #- )
+   > module SomeModule where
+   > import Test.Framework.TH
+   > import Test.Framework
+   > import Test.HUnit
+   > import Test.Framework.Providers.HUnit
+   > import Test.Framework.Providers.QuickCheck2
+   >
+   > -- observe this line! 
+   > main =
+   >   defaultMain [
+   >     testGroup "SomeModule" [ testCase "1" case_1, testCase "2" case_2, testProperty "reverse" prop_reverse]
+   >     ]
+   > 
+   > case_1 = do 1 @=? 1
+   > case_2 = do 2 @=? 2
+   > prop_reverse xs = reverse (reverse xs) == xs
+   >    where types = xs::[Int]
+   .
+   @testGroupGenerator@ is like @defaultMainGenerator@ but without @defaultMain@. It is useful if you need a function for the testgroup
+   (e.g. if you want to be able to call the testgroup from another module).
 category: Testing
 author: Oscar Finnsson & Emil Nordling
 tested-with:

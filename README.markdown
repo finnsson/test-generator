@@ -15,20 +15,42 @@ Haskell-module to automagically generate repetetive code when writing HUnit/Quic
 ### example
 
     -- file SomeModule.hs
+    {-# OPTIONS_GHC -fglasgow-exts -XTemplateHaskell #-}
+    module SomeModule where
+    import Test.Framework.TH
+    import Test.Framework
+    import Test.HUnit
+    import Test.Framework.Providers.HUnit
+    import Test.Framework.Providers.QuickCheck2
+   
+    -- observe this line! 
     fooTestGroup = $(testGroupGenerator)
     main = defaultMain [fooTestGroup]
     case_1 = do 1 @=? 1
     case_2 = do 2 @=? 2
-    prop_reverse = reverse (reverse xs) == xs where types = xs::[Int]
+    prop_reverse xs = reverse (reverse xs) == xs
+       where types = xs::[Int]
 
 is the same as
 
+
     -- file SomeModule.hs
+    {-# OPTIONS_GHC -fglasgow-exts -XTemplateHaskell #-}
+    module SomeModule where
+    import Test.Framework.TH
+    import Test.Framework
+    import Test.HUnit
+    import Test.Framework.Providers.HUnit
+    import Test.Framework.Providers.QuickCheck2
+    
+    -- observe this line!
     fooTestGroup = testGroup "SomeModule" [testCase "1" case_1, testCase "2" case_2, testProperty "reverse" prop_reverse]
     main = defaultMain [fooTestGroup]
     case_1 = do 1 @=? 1
     case_2 = do 2 @=? 2
-    prop_reverse = reverse (reverse xs) == xs where types = xs::[Int]
+    prop_reverse xs = reverse (reverse xs) == xs
+       where types = xs::[Int]
+
 
 ## defaultMainGenerator
 
@@ -42,44 +64,54 @@ is the same as
 
 ### example
 
+
+    -- file SomeModule.hs
     {-# OPTIONS_GHC -fglasgow-exts -XTemplateHaskell #-}
-    module MyModuleTest where
+    module SomeModule where
+    import Test.Framework.TH
+    import Test.Framework
     import Test.HUnit
-    import MainTestGenerator
-    
-    main = $(defaultMainGenerator)
+    import Test.Framework.Providers.HUnit
+    import Test.Framework.Providers.QuickCheck2
    
-    case_Foo = do 4 @=? 4
-    
-    case_Bar = do "hej" @=? "hej"
+    -- observe this line! 
+    main = $(defaultMainGenerator)
+    case_1 = do 1 @=? 1
+    case_2 = do 2 @=? 2
+    prop_reverse xs = reverse (reverse xs) == xs
+       where types = xs::[Int]
 
-    prop_reverse = reverse (reverse xs) == xs where types = xs::[Int]
 
-will automagically extract prop_reverse, case_Foo and case_Bar and run them as well as present them as belonging to the testGroup 'MyModuleTest'. The above code is the same as
+will automagically extract prop_reverse, case_1 and case_2 and run them as well as present them as belonging to the testGroup 'SomeModule'. The above code is the same as
 
+    -- file SomeModule.hs
     {-# OPTIONS_GHC -fglasgow-exts -XTemplateHaskell #-}
-    module MyModuleTest where
+    module SomeModule where
+    import Test.Framework.TH
+    import Test.Framework
     import Test.HUnit
-    import MainTestGenerator
-    
+    import Test.Framework.Providers.HUnit
+    import Test.Framework.Providers.QuickCheck2
+   
+    -- observe this line! 
     main =
       defaultMain [
-        testGroup "MyModuleTest" [ testCase "Foo" case_Foo, testCase "Bar" case_Bar, testProperty "reverse" prop_reverse]
+        testGroup "SomeModule" [ testCase "1" case_1, testCase "2" case_2, testProperty "reverse" prop_reverse]
         ]
-    
-    case_Foo = do 4 @=? 4
-   
-    case_Bar = do "hej" @=? "hej"
 
-    prop_reverse = reverse (reverse xs) == xs where types = xs::[Int]
+    case_1 = do 1 @=? 1
+    case_2 = do 2 @=? 2
+    prop_reverse xs = reverse (reverse xs) == xs
+       where types = xs::[Int]
+
 
 and will give the following result
 
     me: runghc MyModuleTest.hs 
     MyModuleTest:
       reverse: [OK, passed 100 tests]
-      Foo: [OK]
-      Bar: [OK]
+      1: [OK]
+      2: [OK]
      
             Properties  Test Cases  Total      
     Passed  1           2           3          
