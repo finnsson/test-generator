@@ -1,4 +1,4 @@
-{-# OPTIONS_GHC -fglasgow-exts -XTemplateHaskell #-}
+{-# OPTIONS_GHC -XTemplateHaskell #-}
 module Test.Framework.TestTH where 
 import Test.Framework.TH 
 

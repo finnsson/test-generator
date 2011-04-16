@@ -10,7 +10,7 @@
 --
 -- 
 -----------------------------------------------------------------------------
-{-# OPTIONS_GHC -fglasgow-exts -XTemplateHaskell #-}
+{-# OPTIONS_GHC -XTemplateHaskell #-}
 
 module Test.Framework.TH (
   defaultMainGenerator,
