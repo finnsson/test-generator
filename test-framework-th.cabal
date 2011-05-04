@@ -1,5 +1,5 @@
 name: test-framework-th
-version: 0.2.0
+version: 0.2.1
 cabal-version: >= 1.6
 build-type: Simple
 license: BSD3
@@ -13,7 +13,7 @@ description:
    @defaultMainGenerator@ will extract all functions beginning with case_ or prop_ in the module and put them in a testGroup.
    .
    > -- file SomeModule.hs
-   > { -# OPTIONS_GHC -fglasgow-exts -XTemplateHaskell #- }
+   > ( -# OPTIONS_GHC -fglasgow-exts -XTemplateHaskell #- )
    > module SomeModule where
    > import Test.Framework.TH
    > import Test.Framework
