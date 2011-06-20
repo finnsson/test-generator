@@ -15,7 +15,7 @@ Haskell-module to automagically generate repetetive code when writing HUnit/Quic
 ### example
 
     -- file SomeModule.hs
-    {-# OPTIONS_GHC -fglasgow-exts -XTemplateHaskell #-}
+    {-# LANGUAGE TemplateHaskell #-}
     module SomeModule where
     import Test.Framework.TH
     import Test.Framework
@@ -35,7 +35,7 @@ is the same as
 
 
     -- file SomeModule.hs
-    {-# OPTIONS_GHC -fglasgow-exts -XTemplateHaskell #-}
+    {-# LANGUAGE TemplateHaskell #-}
     module SomeModule where
     import Test.Framework.TH
     import Test.Framework
@@ -66,7 +66,7 @@ is the same as
 
 
     -- file SomeModule.hs
-    {-# OPTIONS_GHC -fglasgow-exts -XTemplateHaskell #-}
+    {-# LANGUAGE TemplateHaskell #-}
     module SomeModule where
     import Test.Framework.TH
     import Test.Framework
@@ -85,7 +85,7 @@ is the same as
 will automagically extract prop_reverse, case_1 and case_2 and run them as well as present them as belonging to the testGroup 'SomeModule'. The above code is the same as
 
     -- file SomeModule.hs
-    {-# OPTIONS_GHC -fglasgow-exts -XTemplateHaskell #-}
+    {-# LANGUAGE TemplateHaskell #-}
     module SomeModule where
     import Test.Framework.TH
     import Test.Framework
