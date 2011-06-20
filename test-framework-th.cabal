@@ -63,4 +63,4 @@ library
 
 source-repository head
   type:     git
-  location: https://github.com/finnsson/test-framework-th/
+  location: https://github.com/finnsson/test-generator.git
