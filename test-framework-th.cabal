@@ -13,7 +13,7 @@ description:
    @defaultMainGenerator@ will extract all functions beginning with case_ or prop_ in the module and put them in a testGroup.
    .
    > -- file SomeModule.hs
-   > ( -# OPTIONS_GHC -fglasgow-exts -XTemplateHaskell #- )
+   > ( -# LANGUAGE TemplateHaskell #- )
    > module SomeModule where
    > import Test.Framework.TH
    > import Test.Framework
@@ -31,7 +31,7 @@ description:
    is the same as
    .
    > -- file SomeModule.hs
-   > ( -# OPTIONS_GHC -fglasgow-exts -XTemplateHaskell #- )
+   > ( -# LANGUAGE TemplateHaskell #- )
    > module SomeModule where
    > import Test.Framework.TH
    > import Test.Framework
@@ -63,4 +63,4 @@ library
 
 source-repository head
   type:     git
-  location: https://github.com/finnsson/test-framework-th/
+  location: https://github.com/finnsson/test-generator.git
