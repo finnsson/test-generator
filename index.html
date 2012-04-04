@@ -1,0 +1,160 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Test-generator by finnsson</title>
+    
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Test-generator</h1>
+        <p>Automagically (using Template Haskell) generates the Haskell-code you need when using HUnit</p>
+        <p class="view"><a href="https://github.com/finnsson/test-generator">View the Project on GitHub <small>finnsson/test-generator</small></a></p>
+        <ul>
+          <li><a href="https://github.com/finnsson/test-generator/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/finnsson/test-generator/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/finnsson/test-generator">Fork On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>test-framework-th</h1>
+
+<p>Haskell-module to automagically generate repetetive code when writing HUnit/Quickcheck/Quickcheck2-tests.</p>
+
+<h2>testGroupGenerator</h2>
+
+<h3>signature</h3>
+
+<pre><code>testGroupGenerator :: ExpQ
+</code></pre>
+
+<h3>usage</h3>
+
+<pre><code>myTestGroup = $(testGroupGenerator)
+</code></pre>
+
+<h3>example</h3>
+
+<pre><code>-- file SomeModule.hs
+{-# LANGUAGE TemplateHaskell #-}
+module SomeModule where
+import Test.Framework.TH
+import Test.Framework
+import Test.HUnit
+import Test.Framework.Providers.HUnit
+import Test.Framework.Providers.QuickCheck2
+
+-- observe this line! 
+fooTestGroup = $(testGroupGenerator)
+main = defaultMain [fooTestGroup]
+case_1 = do 1 @=? 1
+case_2 = do 2 @=? 2
+prop_reverse xs = reverse (reverse xs) == xs
+   where types = xs::[Int]
+</code></pre>
+
+<p>is the same as</p>
+
+<pre><code>-- file SomeModule.hs
+{-# LANGUAGE TemplateHaskell #-}
+module SomeModule where
+import Test.Framework.TH
+import Test.Framework
+import Test.HUnit
+import Test.Framework.Providers.HUnit
+import Test.Framework.Providers.QuickCheck2
+
+-- observe this line!
+fooTestGroup = testGroup "SomeModule" [testCase "1" case_1, testCase "2" case_2, testProperty "reverse" prop_reverse]
+main = defaultMain [fooTestGroup]
+case_1 = do 1 @=? 1
+case_2 = do 2 @=? 2
+prop_reverse xs = reverse (reverse xs) == xs
+   where types = xs::[Int]
+</code></pre>
+
+<h2>defaultMainGenerator</h2>
+
+<h3>signature</h3>
+
+<pre><code>defaultMainGenerator :: ExpQ
+</code></pre>
+
+<h3>usage</h3>
+
+<pre><code>main = $(defaultMainGenerator)
+</code></pre>
+
+<h3>example</h3>
+
+<pre><code>-- file SomeModule.hs
+{-# LANGUAGE TemplateHaskell #-}
+module SomeModule where
+import Test.Framework.TH
+import Test.Framework
+import Test.HUnit
+import Test.Framework.Providers.HUnit
+import Test.Framework.Providers.QuickCheck2
+
+-- observe this line! 
+main = $(defaultMainGenerator)
+case_1 = do 1 @=? 1
+case_2 = do 2 @=? 2
+prop_reverse xs = reverse (reverse xs) == xs
+   where types = xs::[Int]
+</code></pre>
+
+<p>will automagically extract prop_reverse, case_1 and case_2 and run them as well as present them as belonging to the testGroup 'SomeModule'. The above code is the same as</p>
+
+<pre><code>-- file SomeModule.hs
+{-# LANGUAGE TemplateHaskell #-}
+module SomeModule where
+import Test.Framework.TH
+import Test.Framework
+import Test.HUnit
+import Test.Framework.Providers.HUnit
+import Test.Framework.Providers.QuickCheck2
+
+-- observe this line! 
+main =
+  defaultMain [
+    testGroup "SomeModule" [ testCase "1" case_1, testCase "2" case_2, testProperty "reverse" prop_reverse]
+    ]
+
+case_1 = do 1 @=? 1
+case_2 = do 2 @=? 2
+prop_reverse xs = reverse (reverse xs) == xs
+   where types = xs::[Int]
+</code></pre>
+
+<p>and will give the following result</p>
+
+<pre><code>me: runghc MyModuleTest.hs 
+MyModuleTest:
+  reverse: [OK, passed 100 tests]
+  1: [OK]
+  2: [OK]
+
+        Properties  Test Cases  Total      
+Passed  1           2           3          
+Failed  0           0           0          
+Total   1           2           3 
+</code></pre>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/finnsson">finnsson</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><!--<![endif]-->
+  </body>
+</html>
