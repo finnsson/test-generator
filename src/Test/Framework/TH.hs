@@ -14,6 +14,7 @@
 
 module Test.Framework.TH (
   defaultMainGenerator,
+  defaultMainGenerator2,
   testGroupGenerator
 ) where
 import Language.Haskell.TH
@@ -60,6 +61,10 @@ import Test.Framework (defaultMain, testGroup)
 defaultMainGenerator :: ExpQ
 defaultMainGenerator = 
   [| defaultMain [ testGroup $(locationModule) $ $(propListGenerator) ++ $(caseListGenerator) ] |]
+
+defaultMainGenerator2 :: ExpQ
+defaultMainGenerator2 = 
+  [| defaultMain [ testGroup $(locationModule) $ $(caseListGenerator) ++ $(propListGenerator) ] |]
 
 -- | Generate the usual code and extract the usual functions needed for a testGroup in HUnit/Quickcheck/Quickcheck2.
 --   All functions beginning with case_ or prop_ will be extracted.
