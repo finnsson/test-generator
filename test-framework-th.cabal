@@ -10,7 +10,7 @@ synopsis: Automagically generate the HUnit- and Quickcheck-bulk-code using Templ
 description:
    @test-framework-th@ contains two interesting functions: @defaultMainGenerator@ and @testGroupGenerator@.
    .
-   @defaultMainGenerator@ will extract all functions beginning with case_ or prop_ in the module and put them in a testGroup.
+   @defaultMainGenerator@ will extract all functions beginning with case_, prop_ or test_in the module and put them in a testGroup.
    .
    > -- file SomeModule.hs
    > ( -# LANGUAGE TemplateHaskell #- )
