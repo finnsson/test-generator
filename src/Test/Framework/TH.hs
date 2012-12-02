@@ -28,7 +28,7 @@ import Language.Haskell.Extract
 import Test.Framework (defaultMain, testGroup)
 
 -- | Generate the usual code and extract the usual functions needed in order to run HUnit/Quickcheck/Quickcheck2.
---   All functions beginning with case_ or prop_ will be extracted.
+--   All functions beginning with case_, prop_ or test_ will be extracted.
 --  
 --   > {-# OPTIONS_GHC -fglasgow-exts -XTemplateHaskell #-}
 --   > module MyModuleTest where
@@ -43,31 +43,39 @@ import Test.Framework (defaultMain, testGroup)
 --   > 
 --   > prop_Reverse xs = reverse (reverse xs) == xs
 --   >   where types = xs :: [Int]
+--   >
+--   > test_Group =
+--   >     [ testCase "1" case_Foo
+--   >     , testProperty "2" prop_Reverse
+--   >     ]
 --   
---   will automagically extract prop_Reverse, case_Foo and case_Bar and run them as well as present them as belonging to the testGroup 'MyModuleTest' such as
+--   will automagically extract prop_Reverse, case_Foo, case_Bar and test_Group and run them as well as present them as belonging to the testGroup 'MyModuleTest' such as
 --
 --   > me: runghc MyModuleTest.hs 
 --   > MyModuleTest:
 --   >   Reverse: [OK, passed 100 tests]
 --   >   Foo: [OK]
 --   >   Bar: [OK]
+--   >   Group:
+--   >     1: [OK]
+--   >     2: [OK, passed 100 tests]
 --   > 
 --   >          Properties  Test Cases   Total       
---   >  Passed  1           2            3          
+--   >  Passed  2           3            5          
 --   >  Failed  0           0            0           
---   >  Total   1           1            3
+--   >  Total   2           3            5
  
 --   
 defaultMainGenerator :: ExpQ
 defaultMainGenerator = 
-  [| defaultMain [ testGroup $(locationModule) $ $(propListGenerator) ++ $(caseListGenerator) ] |]
+  [| defaultMain [ testGroup $(locationModule) $ $(propListGenerator) ++ $(caseListGenerator) ++ $(testListGenerator) ] |]
 
 defaultMainGenerator2 :: ExpQ
 defaultMainGenerator2 = 
-  [| defaultMain [ testGroup $(locationModule) $ $(caseListGenerator) ++ $(propListGenerator) ] |]
+  [| defaultMain [ testGroup $(locationModule) $ $(caseListGenerator) ++ $(propListGenerator) ++ $(testListGenerator) ] |]
 
 -- | Generate the usual code and extract the usual functions needed for a testGroup in HUnit/Quickcheck/Quickcheck2.
---   All functions beginning with case_ or prop_ will be extracted.
+--   All functions beginning with case_, prop_ or test_ will be extracted.
 --  
 --   > -- file SomeModule.hs
 --   > fooTestGroup = $(testGroupGenerator)
@@ -89,7 +97,7 @@ defaultMainGenerator2 =
 --
 testGroupGenerator :: ExpQ
 testGroupGenerator =
-  [| testGroup $(locationModule) $ $(propListGenerator) ++ $(caseListGenerator) |]
+  [| testGroup $(locationModule) $ $(propListGenerator) ++ $(caseListGenerator) ++ $(testListGenerator) |]
 
 listGenerator :: String -> String -> ExpQ
 listGenerator beginning funcName =
@@ -100,6 +108,9 @@ propListGenerator = listGenerator "^prop_" "testProperty"
 
 caseListGenerator :: ExpQ
 caseListGenerator = listGenerator "^case_" "testCase"
+
+testListGenerator :: ExpQ
+testListGenerator = listGenerator "^test_" "testGroup"
 
 -- | The same as
 --   e.g. \n f -> testProperty (fixName n) f

@@ -1,5 +1,6 @@
 {-# OPTIONS_GHC -XTemplateHaskell #-}
 module Test.Framework.TestTH where 
+import Test.Framework
 import Test.Framework.TH 
 
 import Test.HUnit
@@ -22,3 +23,8 @@ case_num_Prop =
   do let expected = 1
          actual = length $ $(functionExtractor "^prop")
      expected @=? actual
+
+test_Group =
+    [ testCase "1" case_Foo
+    , testProperty "2" prop_Reverse
+    ]
