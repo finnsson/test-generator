@@ -30,9 +30,10 @@ import Test.Framework (defaultMain, testGroup)
 -- | Generate the usual code and extract the usual functions needed in order to run HUnit/Quickcheck/Quickcheck2.
 --   All functions beginning with case_, prop_ or test_ will be extracted.
 --  
---   > {-# OPTIONS_GHC -fglasgow-exts -XTemplateHaskell #-}
+--   > {-# LANGUAGE TemplateHaskell #-}
 --   > module MyModuleTest where
 --   > import Test.HUnit
+--   > import Test.QuickCheck
 --   > import MainTestGenerator
 --   > 
 --   > main = $(defaultMainGenerator)
@@ -42,6 +43,9 @@ import Test.Framework (defaultMain, testGroup)
 --   > case_Bar = do "hej" @=? "hej"
 --   > 
 --   > prop_Reverse xs = reverse (reverse xs) == xs
+--   >   where types = xs :: [Int]
+--   >
+--   > feat_Show_to_Read_Roundtrip xs = xs == (read . show) xs
 --   >   where types = xs :: [Int]
 --   >
 --   > test_Group =
@@ -56,26 +60,33 @@ import Test.Framework (defaultMain, testGroup)
 --   >   Reverse: [OK, passed 100 tests]
 --   >   Foo: [OK]
 --   >   Bar: [OK]
+--   >   Show to Read Roundtrip: [Property OK]
 --   >   Group:
 --   >     1: [OK]
 --   >     2: [OK, passed 100 tests]
 --   > 
 --   >          Properties  Test Cases   Total       
---   >  Passed  2           3            5          
+--   >  Passed  3           3            6          
 --   >  Failed  0           0            0           
---   >  Total   2           3            5
+--   >  Total   3           3            6
  
 --   
 defaultMainGenerator :: ExpQ
 defaultMainGenerator = 
-  [| defaultMain [ testGroup $(locationModule) $ $(propListGenerator) ++ $(caseListGenerator) ++ $(testListGenerator) ] |]
+  [| defaultMain [ testGroup $(locationModule) $ $(propListGenerator) 
+                                              ++ $(caseListGenerator) 
+                                              ++ $(testFeatGenerator) 
+                                              ++ $(testListGenerator) ] |]
 
 defaultMainGenerator2 :: ExpQ
 defaultMainGenerator2 = 
-  [| defaultMain [ testGroup $(locationModule) $ $(caseListGenerator) ++ $(propListGenerator) ++ $(testListGenerator) ] |]
+  [| defaultMain [ testGroup $(locationModule) $ $(caseListGenerator) 
+                                              ++ $(propListGenerator) 
+                                              ++ $(testFeatGenerator) 
+                                              ++ $(testListGenerator) ] |]
 
--- | Generate the usual code and extract the usual functions needed for a testGroup in HUnit/Quickcheck/Quickcheck2.
---   All functions beginning with case_, prop_ or test_ will be extracted.
+-- | Generate the usual code and extract the usual functions needed for a testGroup in HUnit\/Quickcheck\/Quickcheck2\/Feat.
+--   All functions beginning with case_, prop_, feat_ or test_ will be extracted.
 --  
 --   > -- file SomeModule.hs
 --   > fooTestGroup = $(testGroupGenerator)
@@ -84,20 +95,30 @@ defaultMainGenerator2 =
 --   > case_2 = do 2 @=? 2
 --   > prop_p xs = reverse (reverse xs) == xs
 --   >  where types = xs :: [Int]
+--   > feat_f xs = xs == (read . show) xs
+--   >   where types = xs :: [Int]
 --   
 --   is the same as
 --
 --   > -- file SoomeModule.hs
---   > fooTestGroup = testGroup "SomeModule" [testProperty "p" prop_1, testCase "1" case_1, testCase "2" case_2]
+--   > fooTestGroup = testGroup "SomeModule" [testProperty "p" prop_1, 
+--   >                                        testCase     "1" case_1, 
+--   >                                        testCase     "2" case_2,
+--   >                                        testFeat     "f" feat_1]
 --   > main = defaultMain [fooTestGroup]
 --   > case_1 = do 1 @=? 1
 --   > case_2 = do 2 @=? 2
 --   > prop_1 xs = reverse (reverse xs) == xs
 --   >  where types = xs :: [Int]
+--   > feat_1 xs = xs == (read . show) xs
+--   >   where types = xs :: [Int]
 --
 testGroupGenerator :: ExpQ
 testGroupGenerator =
-  [| testGroup $(locationModule) $ $(propListGenerator) ++ $(caseListGenerator) ++ $(testListGenerator) |]
+  [| testGroup $(locationModule) $ $(propListGenerator)
+                                ++ $(caseListGenerator)
+                                ++ $(testFeatGenerator)
+                                ++ $(testListGenerator) |]
 
 listGenerator :: String -> String -> ExpQ
 listGenerator beginning funcName =
@@ -111,6 +132,9 @@ caseListGenerator = listGenerator "^case_" "testCase"
 
 testListGenerator :: ExpQ
 testListGenerator = listGenerator "^test_" "testGroup"
+
+testFeatGenerator :: ExpQ
+testFeatGenerator = listGenerator "^feat_" "testFeat"
 
 -- | The same as
 --   e.g. \n f -> testProperty (fixName n) f
