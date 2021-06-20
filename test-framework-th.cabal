@@ -1,6 +1,6 @@
 name: test-framework-th
 version: 0.2.4
-cabal-version: >= 1.6
+cabal-version: >= 1.8
 build-type: Simple
 license: BSD3
 license-file: BSD3.txt
